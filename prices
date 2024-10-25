@@ -1,0 +1,49 @@
+import { Injectable, HttpService } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Price } from './price.entity';
+import axios from 'axios';
+
+@Injectable()
+export class PricesService {
+  constructor(
+    @InjectRepository(Price) private pricesRepository: Repository<Price>,
+    private httpService: HttpService,
+  ) {}
+
+  // Function to fetch price from Moralis API
+  private async fetchPrice(chain: string): Promise<number> {
+    const response = await axios.get(`https://deep-index.moralis.io/api/v2/erc20/${chain}/price`, {
+      headers: {
+        'X-API-Key': process.env.MORALIS_API_KEY,
+      },
+    });
+    return response.data.usdPrice;
+  }
+
+  // Save prices every 5 minutes
+  @Cron('*/5 * * * *')
+  async savePrices() {
+    const ethPrice = await this.fetchPrice('ethereum');
+    const polygonPrice = await this.fetchPrice('polygon');
+
+    const ethPriceRecord = new Price();
+    ethPriceRecord.chain = 'ethereum';
+    ethPriceRecord.price = ethPrice;
+
+    const polygonPriceRecord = new Price();
+    polygonPriceRecord.chain = 'polygon';
+    polygonPriceRecord.price = polygonPrice;
+
+    await this.pricesRepository.save([ethPriceRecord, polygonPriceRecord]);
+  }
+
+  // Get hourly prices for the past 24 hours
+  async getHourlyPrices(chain: string): Promise<Price[]> {
+    return this.pricesRepository.query(
+      `SELECT * FROM price WHERE chain = $1 AND timestamp >= NOW() - INTERVAL '24 HOURS'`, 
+      [chain],
+    );
+  }
+}

@@ -1,0 +1,23 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PricesModule } from './prices/prices.module';
+import { AlertsModule } from './alerts/alerts.module';
+import { SwapModule } from './swap/swap.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { Price } from './prices/price.entity';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      entities: [Price],
+      synchronize: true,
+    }),
+    ScheduleModule.forRoot(),
+    PricesModule,
+    AlertsModule,
+    SwapModule,
+  ],
+})
+export class AppModule {}

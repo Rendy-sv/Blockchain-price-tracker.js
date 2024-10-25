@@ -1,0 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import axios from 'axios';
+
+@Injectable()
+export class SwapService {
+  async getSwapRate(ethAmount: number): Promise<{ btcAmount: number; fee: number }> {
+    const response = await axios.get(`https://api.coingecko.com/api/v3/simple/price?ids=ethereum,bitcoin&vs_currencies=usd`);
+    
+    const ethToUsd = response.data.ethereum.usd;
+    const btcToUsd = response.data.bitcoin.usd;
+    
+    const btcAmount = (ethAmount * ethToUsd) / btcToUsd;
+    const fee = ethAmount * 0.03;
+
+    return { btcAmount, fee };
+  }
+}

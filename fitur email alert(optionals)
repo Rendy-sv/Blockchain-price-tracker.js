@@ -1,0 +1,23 @@
+import { Injectable } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
+
+@Injectable()
+export class AlertsService {
+  private transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  async sendAlertEmail(chain: string, newPrice: number) {
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: 'hyperhire_assignment@hyperhire.in',
+      subject: `Price Alert for ${chain}`,
+      text: `The price of ${chain} has increased by more than 3%. New price: ${newPrice}`,
+    };
+    await this.transporter.sendMail(mailOptions);
+  }
+}
