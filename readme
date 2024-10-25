@@ -1,0 +1,116 @@
+Blockchain Price Tracker
+
+This project is a Blockchain Price Tracker that monitors Ethereum and Polygon prices in real-time. The application periodically saves prices, sends alerts based on custom price thresholds, and provides various APIs for interacting with price data. It also supports Docker for easy setup.
+
+Table of Contents
+
+Features
+
+Requirements
+
+Installation
+
+Usage
+
+Environment Variables
+
+License
+
+
+Features
+
+Automated Price Tracking: Saves Ethereum and Polygon prices every 5 minutes.
+
+Email Alerts: Sends an email if a price increases by more than 3% in one hour.
+
+APIs:
+
+Get hourly prices within a 24-hour range.
+
+Set custom price alerts (e.g., notify if Ethereum reaches $1,000).
+
+Get ETH to BTC conversion rate (including a 0.03% fee).
+
+
+Docker Support: Easily run the application locally with Docker.
+
+
+Requirements
+
+Nest.js
+
+Docker and Docker Compose
+
+Moralis API or Solscan API
+
+Relational Database (e.g., PostgreSQL, MySQL)
+
+Node.js and npm
+
+
+Installation
+
+1. Clone the repository:
+
+git clone https://github.com/your-username/blockchain-price-tracker.git
+cd blockchain-price-tracker
+
+
+2. Install dependencies:
+
+npm install
+
+
+3. Set up environment variables: Create a .env file in the root directory with the necessary API keys and database configuration. See the Environment Variables section for details.
+
+
+4. Run with Docker: Make sure Docker is installed and running. Start the application using:
+
+docker-compose up --build
+
+
+
+Usage
+
+1. Track Prices Automatically:
+
+The app will automatically save Ethereum and Polygon prices every 5 minutes.
+
+If there’s a price increase of over 3% within an hour, an alert email will be sent.
+
+
+
+2. API Endpoints:
+
+GET /api/prices: Retrieve hourly prices within a 24-hour window.
+
+POST /api/alerts: Set an alert for a specific price threshold (parameters: chain, dollar, email).
+
+GET /api/swap: Calculate ETH to BTC conversion and fees (input: Ethereum amount).
+
+
+
+3. Swagger Documentation:
+
+Access the Swagger UI for API documentation at http://localhost:3000/api.
+
+
+
+
+Environment Variables
+
+Create a .env file in the root of the project and add the following variables:
+
+MORALIS_API_KEY=<Your Moralis API Key>
+SOLSCAN_API_KEY=<Your Solscan API Key>
+DATABASE_URL=<Your Database Connection String>
+EMAIL_HOST=<SMTP Host>
+EMAIL_PORT=<SMTP Port>
+EMAIL_USER=<Your Email Username>
+EMAIL_PASS=<Your Email Password>
+
+Replace placeholders with your actual configuration.
+
+License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
